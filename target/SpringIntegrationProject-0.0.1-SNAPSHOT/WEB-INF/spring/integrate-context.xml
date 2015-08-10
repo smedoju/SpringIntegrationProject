@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<context:component-scan base-package="com.spring.integrate.hibernate.webservice" />	
+ 	<mvc:annotation-driven />
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	   <property name="driverClassName"  value="oracle.jdbc.OracleDriver"/> 
+	   <property name="url" value="jdbc:oracle:thin:@//dbgen-stg1-vm-15.cisco.com:1526/emnstg.cisco.com"></property>
+	   <property name="username" value="dbclinic"></property>
+	   <property name="password" value="dbclinic123"></property>
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="annotatedClasses">
+			   <list>    
+                <value>com.spring.integrate.hibernate.webservice.Employee</value>    
+            </list>		
+		</property>
+		
+		<property name="hibernateProperties">
+			<props>				
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop> 
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+				<prop key="org.hibernate.cache.ehcache.configurationResourceName">/ehcache.xml</prop>
+				 <prop key="hibernate.generate_statistics">true</prop>
+			</props>
+		</property>			
+		
+		 
+		
+	</bean>
+	
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">	
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="persistenceExceptionTranslationPostProcessor"  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	
+	
+	<bean id="jspViewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">	   
+		<property name="prefix" value="/WEB-INF/pages/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	 <bean id="dataDaoImpl" class="com.spring.integrate.hibernate.webservice.dao.DataDaoImpl" />  
+     <bean id="dataServiceImpl" class="com.spring.integrate.hibernate.webservice.services.DataServiceImpl" /> 
+	<!-- <bean id="excelViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="order" value="1" />
+		<property name="location" value="/WEB-INF/views.xml" />
+	</bean> -->
+</beans>
