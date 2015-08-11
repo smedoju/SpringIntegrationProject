@@ -52,6 +52,7 @@ public class Players implements Serializable {
 	}
 
 	public String getNickName() {
+		System.out.println("hello");
 		return nickName;
 	}
 
